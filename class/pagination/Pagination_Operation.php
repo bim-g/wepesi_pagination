@@ -1,7 +1,7 @@
 <?php
 class Pagination_Operation{
     private $_limit,
-            $_offset,
+            $_page_value,
             $_isQuesry,
             $_table,
             $db;
@@ -9,7 +9,7 @@ class Pagination_Operation{
     function __construct(string $tabelName)
     {
         $this->_limit=0;
-        $this->_offset=0;
+        $this->_page_value=0;
         $this->_isQuesry=false;
         $this->_table=$tabelName;
         // 
@@ -23,11 +23,11 @@ class Pagination_Operation{
         return $this;
     }
     /**
-     * @integer: $offset=> this is where to start read data. 
+     * @integer: $value=> this is where to start read data. 
      * ex:0 // the first position. witch is 0
      */
-    function offset(int $offset){
-        $this->_offset=(int)$offset;
+    function page(int $value){
+        $this->_page_value=(int)$value;
         return $this;
     }
     private function operation(){
@@ -40,7 +40,7 @@ class Pagination_Operation{
             }
             $total_count = $resudlt_query;
             // check the target offset is > than 1
-            $target_offset = $this->_offset > 1 ? $this->_offset : 1;
+            $target_offset = $this->_page_value > 1 ? $this->_page_value : 1;
             var_dump($target_offset);
             $start = ($target_offset - 1) * $this->_limit;
             // check if the size limit is > 0
