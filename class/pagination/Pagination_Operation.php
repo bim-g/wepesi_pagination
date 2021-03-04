@@ -31,9 +31,27 @@ class Pagination_Operation{
         return $this;
     }
     private function operation(){
-        
+        try {
+            $resudlt_query = "";
+            $resudlt_query = $this->db->count($this->_table)->result();
+
+            if ($this->db->error()) {
+                throw new Exception($this->db->error());
+            }
+            $total_count = $resudlt_query;
+            // check the target offset is > than 1
+            $target_offset = $this->_offset > 1 ? $this->_offset : 1;
+            var_dump($target_offset);
+            $start = ($target_offset - 1) * $this->_limit;
+            // check if the size limit is > 0
+            $limit_size = $this->_limit > 0 ? $this->_limit : 1;
+            $pages = ceil($total_count / $limit_size);
+            return (object)["pages" => $pages, "target" => $start];
+        } catch (Exception $ex) {
+            return ["exception" => $ex->getMessage()];
+        }
     }
-    function result(int $limit){
+    function result(){
         return $this->operation();
     }
 }
