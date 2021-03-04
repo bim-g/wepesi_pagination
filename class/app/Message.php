@@ -10,7 +10,7 @@ class Message{
     {
         try {
             $limit = 6;
-            $pagination = (new Pagination)->getPagesDetail("message")->limit($limit)->offset($pages)->result();
+            $pagination = (new Pagination)->getPagesDetail("message")->limit($limit)->page($pages)->result();
             // get start offet && number of pages
             $offset = $pagination->target;
             $totalpages = $pagination->pages;
