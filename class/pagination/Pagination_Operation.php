@@ -4,6 +4,7 @@ class Pagination_Operation{
             $_page_value,
             $_isQuesry,
             $_table,
+            $_params,
             $db;
 
     function __construct(string $tabelName)
@@ -30,15 +31,31 @@ class Pagination_Operation{
         $this->_page_value=(int)$value;
         return $this;
     }
+    /***
+     * @array : $params=> this params are used to accomplish the query request
+     */
+    function isQuery(array $params=[]){
+        // check if the query exist and if the query is select method
+        if(isset($this->_table) && strchr(strtolower($this->_table), "select")){
+            $this->_isQuesry=true;
+            $this->_params=$params;
+        }
+        return $this;
+    }
     private function operation(){
         try {
             $resudlt_query = "";
-            $resudlt_query = $this->db->count($this->_table)->result();
+            // check if the is use want to passe a request            // 
+            if($this->_isQuesry){
+                $resudlt_query = $this->db->query($this->_table,$this->_params)->result();
+            }else{
+                $resudlt_query = $this->db->count($this->_table)->result();
+            }
 
             if ($this->db->error()) {
                 throw new Exception($this->db->error());
             }
-            $total_count = $resudlt_query;
+            $total_count =$this->_isQuery ? count($resudlt_query) : $resudlt_query;
             // check the target offset is > than 1
             $target_offset = $this->_page_value > 1 ? $this->_page_value : 1;
             var_dump($target_offset);
